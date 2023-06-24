@@ -7,6 +7,7 @@ from fluxburst_gke.version import __version__
 
 assert __version__
 
+
 def init(dataclass, **kwargs):
     """
     Parse custom arguments and return the Burst client.

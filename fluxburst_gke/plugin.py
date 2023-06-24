@@ -36,6 +36,7 @@ class BurstParameters:
     It should be possible to read this in from yaml, or the
     environment (or both).
     """
+
     # Google Cloud Project
     project: str
 
@@ -93,6 +94,9 @@ class BurstParameters:
 
 
 class FluxBurstGKE(plugins.BurstPlugin):
+    # Set our custom dataclass, otherwise empty
+    _param_dataclass = BurstParameters
+
     def schedule(self, *args, **kwargs):
         """
         Given a burstable job, determine if we can schedule it.
