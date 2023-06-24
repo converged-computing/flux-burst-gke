@@ -7,11 +7,10 @@ import os
 
 import fluxburst.plugins as plugins
 import kubescaler.utils as utils
-import requests
 from fluxburst.logger import logger
 
 # This will allow us to create and interact with our cluster
-from kubescaler.scaler import GKECluster
+from kubescaler.scaler.google import GKECluster
 
 import fluxburst_gke.defaults as defaults
 
