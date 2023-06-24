@@ -36,7 +36,6 @@ class BurstParameters:
     It should be possible to read this in from yaml, or the
     environment (or both).
     """
-
     # Google Cloud Project
     project: str
 
@@ -97,20 +96,25 @@ class FluxBurstGKE(plugins.BurstPlugin):
     # Set our custom dataclass, otherwise empty
     _param_dataclass = BurstParameters
 
-    def schedule(self, *args, **kwargs):
+    def schedule(self, job):
         """
         Given a burstable job, determine if we can schedule it.
 
         This function should also consider logic for deciding if/when to
         assign clusters, but run should actually create/destroy.
         """
-        print("GKE SCHEDULE")
-        import IPython
-
-        IPython.embed()
         # TODO determine if we can match some resource spec to another,
-        # add to self.jobs
-        # We likely want this class to be able to generate a lookup of instances / spec about them.
+        # We likely want this class to be able to generate a lookup of
+        # instances / spec about them.
+
+        # For now, we just accept anything, and add to our jobs and return true
+        if job['id'] in self.jobs:
+            logger.debug(f"{job['id']} is already scheduled")
+            return True
+
+        # Add to self.jobs and return True!
+        self.jobs[job['id']] = job
+        return True
 
     def run(self):
         """
