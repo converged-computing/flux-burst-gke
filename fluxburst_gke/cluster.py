@@ -8,7 +8,6 @@ import os
 
 import fluxburst.utils as utils
 import requests
-from fluxburst.logger import logger
 from kubernetes import client as kubernetes_client
 
 import fluxburst_gke.defaults as defaults
@@ -16,6 +15,7 @@ import fluxburst_gke.defaults as defaults
 
 def get_minicluster(
     command,
+    curve_cert=None,
     size=None,
     tasks=None,  # nodes * cpu per node, where cpu per node is vCPU / 2
     cpu_limit=None,
@@ -30,7 +30,7 @@ def get_minicluster(
     lead_host=None,
     lead_port=None,
     broker_toml=None,
-    munge_config_map=None,
+    munge_secret_name=None,
     lead_size=None,
     lead_jobname=None,
     zeromq=False,
@@ -88,8 +88,13 @@ def get_minicluster(
 
     if tasks is not None:
         mc["tasks"] = tasks
-    if munge_config_map:
-        mc["flux"]["mungeConfigMap"] = munge_config_map
+    # This is text directly in config (likely need this to be a secret too)
+    if curve_cert:
+        mc["flux"]["curveCert"] = curve_cert
+
+    # This is just the secret name
+    if munge_secret_name:
+        mc["flux"]["mungeSecret"] = munge_secret_name
     if broker_toml:
         mc["flux"]["broker_config"] = broker_toml
 
@@ -99,25 +104,37 @@ def get_minicluster(
     return mc, container
 
 
-def ensure_flux_operator_yaml(args):
+def ensure_curve_cert(curve_cert):
+    """
+    Ensure we are provided with an existing curve certificate we can load.
+    """
+    if not curve_cert or not os.path.exists(curve_cert):
+        raise ValueError(
+            f"Curve cert (provided as {curve_cert}) needs to be defined and exist."
+        )
+    return utils.read_file(curve_cert)
+
+
+def ensure_flux_operator_yaml(flux_operator_yaml):
     """
     Ensure we are provided with the installation yaml and it exists!
     """
     # flux operator yaml default is current from main
-    if not args.flux_operator_yaml:
-        args.flux_operator_yaml = utils.get_tmpfile(prefix="flux-operator") + ".yaml"
+    if not flux_operator_yaml:
+        flux_operator_yaml = utils.get_tmpfile(prefix="flux-operator") + ".yaml"
         r = requests.get(defaults.flux_operator_yaml, allow_redirects=True)
-        utils.write_file(r.content, args.flux_operator_yaml)
+        utils.write_file(r.content, flux_operator_yaml)
 
     # Ensure it really really exists
-    args.flux_operator_yaml = os.path.abspath(args.flux_operator_yaml)
-    if not os.path.exists(args.flux_operator_yaml):
-        logger.exit(f"{args.flux_operator_yaml} does not exist.")
+    flux_operator_yaml = os.path.abspath(flux_operator_yaml)
+    if not os.path.exists(flux_operator_yaml):
+        raise ValueError(f"{flux_operator_yaml} does not exist.")
+    return flux_operator_yaml
 
 
-def create_munge_configmap(path, name, namespace):
+def create_munge_secret(path, name, namespace):
     """
-    Create a binary data config map
+    Create a binary data secret
     """
     # Configureate ConfigMap metadata
     metadata = kubernetes_client.V1ObjectMeta(
@@ -132,9 +149,10 @@ def create_munge_configmap(path, name, namespace):
     content = base64.b64encode(content).decode("utf-8")
 
     # Instantiate the configmap object
-    return kubernetes_client.V1ConfigMap(
+    return kubernetes_client.V1Secret(
         api_version="v1",
-        kind="ConfigMap",
-        binary_data={"munge.key": content},
+        kind="Secret",
+        type="opaque",
+        string_data={"munge.key": content},
         metadata=metadata,
     )
