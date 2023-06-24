@@ -36,9 +36,27 @@ class BurstParameters:
     It should be possible to read this in from yaml, or the
     environment (or both).
     """
-
     # Google Cloud Project
     project: str
+
+    # Path to munge.key file (local) to use to create config map
+    munge_key: str
+
+    # Name of a secret to be made in the same namespace
+    munge_secret_name: str
+
+    # Broker toml template for bursted cluster
+    broker_toml: str
+
+    # Lead broker service hostname or ip address
+    lead_host: str
+
+    # Lead broker service port (e.g, 30093)
+    lead_port: str
+
+    # Lead broker size
+    lead_size: str
+
     cluster_name: str = "flux-cluster"
     machine_type: str = "c2-standard-8"
     cpu_limit: Optional[int] = None
@@ -56,26 +74,8 @@ class BurstParameters:
     # Custom yaml definition to use to install the Flux Operator
     flux_operator_yaml: Optional[str] = None
 
-    # Path to munge.key file (local) to use to create config map
-    munge_key: str
-
-    # Name of a secret to be made in the same namespace
-    munge_secret_name: str
-
     # Path to curve.cert
     curve_cert: Optional[str] = "/mnt/curve/curve.cert"
-
-    # Broker toml template for bursted cluster
-    broker_toml: str
-
-    # Lead broker service hostname or ip address
-    lead_host: str
-
-    # Lead broker service port (e.g, 30093)
-    lead_port: str
-
-    # Lead broker size
-    lead_size: str
 
     # Flux log level
     log_level: Optional[int] = 7
