@@ -45,9 +45,6 @@ class BurstParameters:
     # Name of a secret to be made in the same namespace
     munge_secret_name: str
 
-    # Broker toml template for bursted cluster
-    broker_toml: str
-
     # Lead broker service hostname or ip address
     lead_host: str
 
@@ -55,10 +52,13 @@ class BurstParameters:
     lead_port: str
 
     # Lead broker size
-    lead_size: str
+    lead_size: int
 
-    cluster_name: str = "flux-cluster"
-    machine_type: str = "c2-standard-8"
+    # Custom broker toml template for bursted cluster
+    broker_toml: Optional[str] = None
+
+    cluster_name: Optional[str] = "flux-cluster"
+    machine_type: Optional[str] = "c2-standard-8"
     cpu_limit: Optional[int] = None
     memory_limit: Optional[int] = None
 
