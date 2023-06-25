@@ -199,8 +199,9 @@ class FluxBurstGKE(plugins.BurstPlugin):
         # Create the cluster (this times it)
         try:
             self.clusters[cluster_name] = cli.create_cluster()
-        # What other cases might be here?
+        # We still need to register the cluster exists
         except Exception:
+            self.clusters[cluster_name] = cli.create_cluster()
             print("🥵️ Issue creating cluster, assuming already exists.")
 
         # Create a client from it
