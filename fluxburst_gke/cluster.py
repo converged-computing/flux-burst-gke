@@ -142,6 +142,10 @@ def create_secret(path, secret_path, name, namespace):
     """
     Create a secret
     """
+    print(f'CREATING SECRET FOR {name}')
+    import IPython
+    IPython.embed()
+
     # Configureate ConfigMap metadata
     metadata = kubernetes_client.V1ObjectMeta(
         name=name,
