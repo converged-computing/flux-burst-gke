@@ -92,15 +92,15 @@ def get_minicluster(
 
     # This is text directly in config
     if curve_cert:
-        mc["flux"]["curveCert"] = curve_cert
+        mc["flux"]["curve_cert"] = curve_cert
 
     # A provided secret will take precedence
     if curve_cert_secret_name:
-        mc["flux"]["curveCertSecret"] = curve_cert_secret_name
+        mc["flux"]["curve_cert_cecret"] = curve_cert_secret_name
 
     # This is just the secret name
     if munge_secret_name:
-        mc["flux"]["mungeSecret"] = munge_secret_name
+        mc["flux"]["munge_secret"] = munge_secret_name
     if broker_toml:
         mc["flux"]["broker_config"] = broker_toml
 

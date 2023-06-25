@@ -279,11 +279,6 @@ class FluxBurstGKE(plugins.BurstPlugin):
             lead_jobname=hostname,
             lead_size=self.params.lead_size,
         )
-
-        print('CHECK THAT SECRET IN MINICLUSTER')
-        import IPython
-        IPython.embed()
-
         # Create the namespace
         self.ensure_namespace(kubectl)
 
@@ -296,7 +291,9 @@ class FluxBurstGKE(plugins.BurstPlugin):
         print(
             f"⭐️ Creating the minicluster {self.params.name} in {self.params.namespace}..."
         )
-        operator = FluxMiniCluster()
+
+        # Make sure we provide the core_v1_api we've created
+        operator = FluxMiniCluster(core_v1_api=kubectl)
         import IPython
 
         IPython.embed()
