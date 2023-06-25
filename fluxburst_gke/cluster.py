@@ -15,7 +15,6 @@ import fluxburst_gke.defaults as defaults
 
 def get_minicluster(
     command,
-    curve_cert=None,
     size=None,
     tasks=None,  # nodes * cpu per node, where cpu per node is vCPU / 2
     cpu_limit=None,
@@ -31,6 +30,8 @@ def get_minicluster(
     lead_port=None,
     broker_toml=None,
     munge_secret_name=None,
+    curve_cert_secret_name=None,
+    curve_cert=None,
     lead_size=None,
     lead_jobname=None,
     zeromq=False,
@@ -88,9 +89,14 @@ def get_minicluster(
 
     if tasks is not None:
         mc["tasks"] = tasks
-    # This is text directly in config (likely need this to be a secret too)
+
+    # This is text directly in config
     if curve_cert:
         mc["flux"]["curveCert"] = curve_cert
+
+    # A provided secret will take precedence
+    if curve_cert_secret_name:
+        mc["flux"]["curveCertSecret"] = curve_cert_secret_name
 
     # This is just the secret name
     if munge_secret_name:
@@ -132,9 +138,11 @@ def ensure_flux_operator_yaml(flux_operator_yaml):
     return flux_operator_yaml
 
 
-def create_munge_secret(path, name, namespace):
+def create_secret(path, secret_path, name, namespace):
     """
-    Create a binary data secret
+    Create a secret
+
+    TODO need to test if we need to vary between binary/text
     """
     # Configureate ConfigMap metadata
     metadata = kubernetes_client.V1ObjectMeta(
@@ -153,6 +161,6 @@ def create_munge_secret(path, name, namespace):
         api_version="v1",
         kind="Secret",
         type="opaque",
-        string_data={"munge.key": content},
+        string_data={secret_path: content},
         metadata=metadata,
     )
