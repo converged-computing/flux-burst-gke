@@ -141,8 +141,6 @@ def ensure_flux_operator_yaml(flux_operator_yaml):
 def create_secret(path, secret_path, name, namespace):
     """
     Create a secret
-
-    TODO need to test if we need to vary between binary/text
     """
     # Configureate ConfigMap metadata
     metadata = kubernetes_client.V1ObjectMeta(

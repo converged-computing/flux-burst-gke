@@ -265,7 +265,6 @@ class FluxBurstGKE(plugins.BurstPlugin):
             memory_limit=self.params.memory_limit,
             cpu_limit=self.params.cpu_limit,
             namespace=self.params.namespace,
-            curve_cert_secret_name=self.params.curve_cert_secret_name,
             broker_toml=self.params.broker_toml,
             tasks=job["ntasks"],
             size=job["nnodes"],
@@ -276,9 +275,14 @@ class FluxBurstGKE(plugins.BurstPlugin):
             lead_host=self.params.lead_host,
             lead_port=self.params.lead_port,
             munge_secret_name=self.params.munge_secret_name,
+            curve_cert_secret_name=self.params.curve_cert_secret_name,
             lead_jobname=hostname,
             lead_size=self.params.lead_size,
         )
+
+        print('CHECK THAT SECRET IN MINICLUSTER')
+        import IPython
+        IPython.embed()
 
         # Create the namespace
         self.ensure_namespace(kubectl)
@@ -302,10 +306,6 @@ class FluxBurstGKE(plugins.BurstPlugin):
         """
         Ensure secrets (munge.key and curve.cert) are ready for a job
         """
-        print("ENSURE SECRETS")
-        import IPython
-
-        IPython.embed()
         secrets = []
 
         # kubectl create secret --namespace flux-operator munge-key --from-file=/etc/munge/munge.key
@@ -323,7 +323,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
             secrets.append(
                 helpers.create_secret(
                     self.params.munge_key,
-                    "munge.key",
+                    "munge-key",
                     self.params.munge_secret_name,
                     self.params.namespace,
                 )
@@ -331,6 +331,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
 
         for secret in secrets:
             try:
+                logger.debug(f"Creating secret {secret.metadata.name}")
                 kubectl.create_namespaced_secret(
                     namespace=self.params.namespace,
                     body=secret,
