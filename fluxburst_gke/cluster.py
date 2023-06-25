@@ -96,7 +96,7 @@ def get_minicluster(
 
     # A provided secret will take precedence
     if curve_cert_secret_name:
-        mc["flux"]["curve_cert_cecret"] = curve_cert_secret_name
+        mc["flux"]["curve_cert_secret"] = curve_cert_secret_name
 
     # This is just the secret name
     if munge_secret_name:
