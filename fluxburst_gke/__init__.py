@@ -8,13 +8,14 @@ from fluxburst_gke.version import __version__
 assert __version__
 
 
-def client(**kwargs):
+def init(dataclass, **kwargs):
     """
     Parse custom arguments and return the Burst client.
 
-    It is recommended to import here in case connecting to Flux
-    is required.
+    We use a function based import here in case additional checks are
+    needed, or things that aren't available when the module is loaded
+    (but are later when this function is called)
     """
-    from .burst import FluxBurstGKE
+    from .plugin import FluxBurstGKE
 
-    return FluxBurstGKE(**kwargs)
+    return FluxBurstGKE(dataclass, **kwargs)
