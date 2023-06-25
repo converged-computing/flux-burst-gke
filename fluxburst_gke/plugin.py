@@ -323,6 +323,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
                     "munge.key",
                     self.params.munge_secret_name,
                     self.params.namespace,
+                    mode="rb",
                 )
             )
 

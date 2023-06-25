@@ -138,7 +138,7 @@ def ensure_flux_operator_yaml(flux_operator_yaml):
     return flux_operator_yaml
 
 
-def create_secret(path, secret_path, name, namespace):
+def create_secret(path, secret_path, name, namespace, mode="r"):
     """
     Create a secret
     """
@@ -152,11 +152,12 @@ def create_secret(path, secret_path, name, namespace):
         namespace=namespace,
     )
     # Get File Content
-    with open(path, "rb") as f:
+    with open(path, mode) as f:
         content = f.read()
 
     # base64 encoded string
-    content = base64.b64encode(content).decode("utf-8")
+    if mode == "rb":
+        content = base64.b64encode(content).decode("utf-8")
 
     # Instantiate the configmap object
     return kubernetes_client.V1Secret(
