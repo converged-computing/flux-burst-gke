@@ -90,7 +90,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
     _param_dataclass = BurstParameters
 
     def __init__(self, *args, **kwargs):
-        self.__super__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Very simple and stupid way (for now) to keep track of bursted clusters
         # TODO we will need a way to know when to create/destroy
