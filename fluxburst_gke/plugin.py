@@ -320,7 +320,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
             secrets.append(
                 helpers.create_secret(
                     self.params.munge_key,
-                    "munge-key",
+                    "munge.key",
                     self.params.munge_secret_name,
                     self.params.namespace,
                 )
