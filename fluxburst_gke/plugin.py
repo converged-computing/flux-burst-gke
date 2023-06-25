@@ -294,10 +294,7 @@ class FluxBurstGKE(plugins.BurstPlugin):
 
         # Make sure we provide the core_v1_api we've created
         operator = FluxMiniCluster(core_v1_api=kubectl)
-        import IPython
-
-        IPython.embed()
-        res = operator.create(**minicluster, container=container, crd_api=crd_api)
+        return operator.create(**minicluster, container=container, crd_api=crd_api)
 
     def ensure_secrets(self, kubectl):
         """
