@@ -2,6 +2,10 @@
 
 This is an example implementation for an external bursting plugin for Flux.
 For instructions, see the [main flux-burst repository](https://github.com/converged-computing/flux-burst).
+Tutorials are available under the [flux operator](https://github.com/flux-framework/flux-operator/tree/main/examples/experimental/bursting)
+
+![https://raw.githubusercontent.com/converged-computing/flux-burst/main/docs/assets/img/logo.png](https://raw.githubusercontent.com/converged-computing/flux-burst/main/docs/assets/img/logo.png)
+
 
 **under development**
 
