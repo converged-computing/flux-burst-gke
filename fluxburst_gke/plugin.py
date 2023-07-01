@@ -117,7 +117,7 @@ class FluxBurstGKE(bases.KubernetesBurstPlugin):
             raise ValueError(f"{name} is not a known cluster.")
         clusters = self.clusters if not name else {"name": self.clusters["name"]}
         for cluster_name, _ in clusters.items():
-            logger.info("Cleaning up {cluster_name}")
+            logger.info(f"Cleaning up {cluster_name}")
             cli = GKECluster(
                 project=self.params.project,
                 name=cluster_name,
