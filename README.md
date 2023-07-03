@@ -6,6 +6,7 @@ Tutorials are available under the [flux operator](https://github.com/flux-framew
 
 ![https://raw.githubusercontent.com/converged-computing/flux-burst/main/docs/assets/img/logo.png](https://raw.githubusercontent.com/converged-computing/flux-burst/main/docs/assets/img/logo.png)
 
+For a mock example (a burst without a local cluster, but just to test the ability to create the bursted cluster) see [example](example).
 
 **under development**
 

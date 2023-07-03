@@ -26,14 +26,17 @@ class BurstParameters:
     # Google Cloud Project
     project: str
 
+    # An isolated burst brings up an independent cluster
+    isolated_burst: Optional[bool] = False
+
     # Lead broker service hostname or ip address
-    lead_host: str
+    lead_host: Optional[str] = None
 
     # Lead broker service port (e.g, 30093)
-    lead_port: str
+    lead_port: Optional[str] = None
 
     # Lead broker size
-    lead_size: int
+    lead_size: Optional[str] = None
 
     # Custom broker toml template for bursted cluster
     broker_toml: Optional[str] = None
@@ -82,12 +85,12 @@ class FluxBurstGKE(bases.KubernetesBurstPlugin):
     # Set our custom dataclass, otherwise empty
     _param_dataclass = BurstParameters
 
-    def schedule(self, job):
+    def validate(self):
         """
-        Given a burstable job, determine if we can schedule it.
+        Validate ensures that required conditions are met.
 
-        This function should also consider logic for deciding if/when to
-        assign clusters, but run should actually create/destroy.
+        This should return True/False to indicate if valid or not, and
+        print meaninging error messages for the user
         """
         # We cannot run any jobs without Google Application Credentials
         if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:
@@ -96,6 +99,16 @@ class FluxBurstGKE(bases.KubernetesBurstPlugin):
             )
             return False
 
+        # Shared validation functions from kubernetes
+        return super(FluxBurstGKE, self).validate()
+
+    def schedule(self, job):
+        """
+        Given a burstable job, determine if we can schedule it.
+
+        This function should also consider logic for deciding if/when to
+        assign clusters, but run should actually create/destroy.
+        """
         # TODO determine if we can match some resource spec to another,
         # We likely want this class to be able to generate a lookup of
         # instances / spec about them.
