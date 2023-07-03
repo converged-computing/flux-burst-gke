@@ -127,15 +127,18 @@ class FluxBurstGKE(bases.KubernetesBurstPlugin):
         Cleanup (delete) one or more clusters
         """
         if name and name not in self.clusters:
-            raise ValueError(f"{name} is not a known cluster.")
-        clusters = self.clusters if not name else {"name": self.clusters["name"]}
-        for cluster_name, _ in clusters.items():
+            logger.warning(f"{name} is not a known cluster.")
+        clusters = list(self.clusters) if not name else [name]
+        for cluster_name in clusters:
             logger.info(f"Cleaning up {cluster_name}")
             cli = GKECluster(
                 project=self.params.project,
                 name=cluster_name,
             )
-            cli.delete_cluster()
+            try:
+                cli.delete_cluster()
+            except Exception:
+                logger.warning(f"Issue deleting {cluster_name}")
 
         # Update known clusters
         updated = {}
