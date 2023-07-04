@@ -14,5 +14,6 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip. Only major versions will be released as tags on Github.
 
 ## [0.0.x](https://github.com/converged-computing/flux-burst-gke/tree/main) (0.0.x)
+ - support for mock mode (0.0.11)
  - using shared logic from fluxburst.kubernetes (0.0.1)
  - initial skeleton release of project (0.0.0)

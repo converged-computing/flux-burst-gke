@@ -1,7 +1,7 @@
 bin/
 lib/
 *.db
-fluxburst_gke.egg-info
+flux_burst_gke.egg-info
 env
 .env
 apigen/_build
